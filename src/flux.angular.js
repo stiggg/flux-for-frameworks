@@ -1,7 +1,7 @@
 /*global angular,_*/
 'use strict';
 
-angular.module('fluxForAngular')
+angular.module('fluxForAngular', [])
   .factory('eventEmitterFactory', ['$log', function($log) {
     return {
       create: function() {
@@ -82,7 +82,7 @@ angular.module('fluxForAngular')
         item
       ) {
         return {
-          'actionType': actionType,
+          'type': actionType,
           'item': item
         };
       }

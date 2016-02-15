@@ -1,0 +1,114 @@
+<!doctype html>
+<html class="no-js" lang="" data-ng-app="app">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Backbone Flux example</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.js"></script>
+        <script src="../src/flux.angular.js"></script>
+
+        <script>
+          var ADD_PERSON = 'ADD_PERSON';
+          var STORE_UPDATED = 'STORE_UPDATED';
+
+          var app = angular.module('app', ['components', 'actions']);
+
+          angular.module('components', ['stores'])
+          .directive('addPerson', function() {
+            return {
+              template:
+                      '<div><label for="person-name">Name</label>' +
+                      '<input name="name" type="text" id="person-name" data-ng-model="name">' +
+                      '<button id="add-person" data-ng-click="addPerson(name)">Add person!</button></div>',
+              controller: ['$scope', '$log', 'actions',
+                function($scope, $log, actions) {
+                  $scope.addPerson = function(name) {
+                    actions.addPerson(name);
+                  };
+                }
+              ]
+            };
+          })
+          .directive('personList', function() {
+            return {
+              template: '<div>Persons added: {{ persons }}</div>',
+              controller: ['$scope', '$log', 'personStore',
+                function($scope, $log, personStore) {
+                  $scope.persons = [];
+
+                  personStore.addListener(function(action) {
+                    switch (action.type) {
+                      case STORE_UPDATED:
+                        //$log.info('store updated, render component...');
+                        $scope.persons = JSON.stringify(personStore.getItems());
+                        break;
+                    }
+                  });
+                }
+              ]
+            };
+          })
+          .directive('personCount', function() {
+            return {
+              template: '<div>Total persons: {{ count }}</div>',
+              controller: ['$scope', '$log', 'personStore',
+                function($scope, $log, personStore) {
+                  $scope.count = 0;
+
+                  personStore.addListener(function(action) {
+                    switch (action.type) {
+                      case STORE_UPDATED:
+                        $scope.count = personStore.getItems().length;
+                        break;
+                    }
+                  });
+                }
+              ]
+            };
+          });
+
+          angular.module('stores', ['fluxForAngular'])
+          .factory('personStore', ['dispatcher', 'storeFactory', 'actionFactory', function(
+            dispatcher, storeFactory, actionFactory
+          ) {
+              var store = storeFactory.create();
+
+              dispatcher.addListener(function(action) {
+                switch (action.type) {
+                  case ADD_PERSON:
+                    store.addItem(action.item);
+                    store.emit(actionFactory.create(STORE_UPDATED));
+
+                    break;
+                }
+              });
+
+              return store;
+            }
+          ]);
+
+          angular.module('actions', ['fluxForAngular'])
+          .factory('actions', ['dispatcher', 'actionFactory', '$log', function(dispatcher,
+            actionFactory, $log) {
+            return {
+              addPerson: function(name) {
+                $log.info('adding person: ' + name);
+
+                dispatcher.emit(actionFactory.create(
+                  ADD_PERSON,
+                  {name: name}
+                ));
+              }
+            };
+          }]);
+        </script>
+    </head>
+    <body>
+      <add-person></add-person>
+      <person-list></person-list>
+      <person-count></person-count>
+    </body>
+</html>
