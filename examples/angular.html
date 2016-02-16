@@ -6,6 +6,14 @@
         <title>AngularJS Flux Example</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+          .component {
+            border: 1px dotted red;
+            margin: 5px 0;
+            padding: 5px;
+            display: block;
+          }
+        </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular.js"></script>
         <script src="../src/flux.angular.js"></script>
@@ -79,7 +87,7 @@
               dispatcher.addListener(function(action) {
                 switch (action.type) {
                   case ADD_PERSON:
-                    store.addItem(action.item);
+                    store.addItem(action.payload);
                     store.emit(actionFactory.create(STORE_UPDATED));
 
                     break;
@@ -107,8 +115,8 @@
         </script>
     </head>
     <body>
-      <add-person></add-person>
-      <person-list></person-list>
-      <person-count></person-count>
+      <add-person class="component"></add-person>
+      <person-list class="component"></person-list>
+      <person-count class="component"></person-count>
     </body>
 </html>
