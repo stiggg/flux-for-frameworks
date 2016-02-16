@@ -5,11 +5,23 @@ var Flux = {};
 (function() {
   'use strict';
 
-  /*
-   * Global dispatcher is just a clone of Backbone Events object.
-   */
-  Flux.Dispatcher = function() {
-    return _.clone(Backbone.Events);
+  var EventEmitter = function() {
+    return {
+      listeners: [],
+
+      emit: function(event) {
+        // remove comment to log all events
+        // $log.log(event);
+        this.listeners.forEach(function(listener) {
+          listener(event);
+        });
+      },
+
+      addListener: function(listener) {
+        this.listeners.push(listener);
+        return this.listeners.length - 1;
+      }
+    };
   };
 
   /*
@@ -30,7 +42,14 @@ var Flux = {};
       removeItem: function(item) {
         this.items.remove(item);
       }
-    }, Backbone.Events);
+    }, new EventEmitter());
+  };
+
+  /*
+   * Global dispatcher is just a clone of Backbone Events object.
+   */
+  Flux.Dispatcher = function() {
+    return _.clone(Backbone.Events);
   };
 
   /*
@@ -44,5 +63,12 @@ var Flux = {};
     }
 
     return store;
+  };
+
+  Flux.Action = function(type, payload) {
+    return {
+      type: type,
+      payload: payload,
+    };
   };
 })();

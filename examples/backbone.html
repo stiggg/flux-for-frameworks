@@ -6,6 +6,13 @@
         <title>Backbone.js Flux Example</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+          .component {
+            border: 1px dotted red;
+            margin: 5px 0;
+            padding: 5px;
+          }
+        </style>
         <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min.js"></script>
@@ -13,6 +20,9 @@
 
         <script>
           /*global Flux*/
+
+          var ADD_PERSON = 'ADD_PERSON';
+          var STORE_UPDATED = 'STORE_UPDATED';
 
           window.FluxForBackbone = {
             Models: {},
@@ -45,13 +55,13 @@
               initialize: function() {
                 var store = this;
 
-                // notify this store's listeners
+                // notify this store's listeners on updates
                 store.items.on('all', function() {
-                  store.trigger('persons:changed');
+                  store.emit(new Flux.Action(STORE_UPDATED));
                 });
 
                 // listen for dispatcher, whenever person added event is triggered
-                FluxForBackbone.Dispatcher.on('person:add', function(name) {
+                FluxForBackbone.Dispatcher.on(ADD_PERSON, function(name) {
                   store.addItem(new FluxForBackbone.Models.Person({name: name}));
                 })
               }
@@ -69,7 +79,7 @@
               },
 
               addPerson: function() {
-                FluxForBackbone.Dispatcher.trigger('person:add', this.$el.find('#person-name').val());
+                FluxForBackbone.Dispatcher.trigger(ADD_PERSON, this.$el.find('#person-name').val());
               },
 
               render: function() {
@@ -82,21 +92,44 @@
               template: _.template('Persons added: <%= persons %>'),
               el: $('#result-container'),
 
-              events: {
-              },
-
               initialize: function() {
                 var that = this;
 
-                // listen to store changes
-                FluxForBackbone.Stores.Persons.on('persons:changed', function() {
-                  that.render();
+                FluxForBackbone.Stores.Persons.addListener(function(action) {
+                  switch (action.type) {
+                    case STORE_UPDATED:
+                      that.render();
+                      break;
+                  }
                 });
               },
 
               render: function() {
                 this.$el.html(this.template({
                   persons: JSON.stringify(FluxForBackbone.Stores.Persons.getItems())
+                }));
+                return this;
+              }
+            });
+
+            FluxForBackbone.Views.Count = Backbone.View.extend({
+              template: _.template($('#count-template').html()),
+              el: $('#count-container'),
+
+              initialize: function() {
+                var that = this;
+                FluxForBackbone.Stores.Persons.addListener(function(action) {
+                  switch (action.type) {
+                    case STORE_UPDATED:
+                      that.render();
+                      break;
+                  }
+                });
+              },
+
+              render: function() {
+                this.$el.html(this.template({
+                  count: FluxForBackbone.Stores.Persons.getItems().length
                 }));
                 return this;
               }
@@ -110,9 +143,11 @@
               frontpage: function() {
                 var formView = new FluxForBackbone.Views.Form();
                 var resultView = new FluxForBackbone.Views.Result();
+                var countView = new FluxForBackbone.Views.Count();
 
                 formView.render();
                 resultView.render();
+                countView.render();
               },
             });
 
@@ -128,10 +163,12 @@
         </button>
       </script>
 
-      <div id="form-container">
-      </div>
+      <script type="text/template" id="count-template">
+        Total persons: <%= count %>
+      </script>
 
-      <div id="result-container">
-      </div>
+      <div id="form-container" class="component"></div>
+      <div id="result-container" class="component"></div>
+      <div id="count-container" class="component"></div>
     </body>
 </html>

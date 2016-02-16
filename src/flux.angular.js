@@ -83,7 +83,7 @@ angular.module('fluxForAngular', [])
       ) {
         return {
           'type': actionType,
-          'item': item
+          'payload': item
         };
       }
     };
