@@ -19,6 +19,10 @@ angular.module('fluxForAngular', [])
           addListener: function(listener) {
             this.listeners.push(listener);
             return this.listeners.length - 1;
+          },
+
+          clearListeners: function() {
+            this.listeners = [];
           }
         };
       }
@@ -43,8 +47,7 @@ angular.module('fluxForAngular', [])
           this.items.push(item);
           return this;
         },
-        removeItem: function(item) {
-          var index = this.items.indexOf(item);
+        removeItem: function(index) {
           this.items.splice(index, 1);
           return this;
         }
