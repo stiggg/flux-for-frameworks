@@ -1,0 +1,36 @@
+---
+- name: download node package
+  command: curl https://nodejs.org/dist/v4.2.4/node-v4.2.4-linux-x64.tar.gz -o node-v4.2.4-linux-x64.tar.gz
+  args:
+    chdir: /tmp
+    creates: /tmp/node-v4.2.4-linux-x64.tar.gz
+
+- name: extract node package
+  command: tar xzvf node-v4.2.4-linux-x64.tar.gz
+  args:
+    chdir: /tmp
+    creates: /tmp/node-v4.2.4-linux-x64
+
+- name: move node to /usr/local
+  command: mv node-v4.2.4-linux-x64 /opt
+  args:
+    chdir: /tmp
+    creates: /opt/node-v4.2.4-linux-x64
+
+- name: remove symlinks
+  command: rm -f /usr/local/bin/node /usr/local/bin/npm
+
+- name: symlink node
+  command: ln -s /opt/node-v4.2.4-linux-x64/bin/node /usr/local/bin/node
+
+- name: symlink npm
+  command: ln -s /opt/node-v4.2.4-linux-x64/bin/npm /usr/local/bin/npm
+
+- name: install needed build stuff
+  command: npm install -g bower
+
+- name: symlink bower
+  file: src=/opt/node-v4.2.4-linux-x64/lib/node_modules/bower/bin/bower 
+    dest=/usr/local/bin/bower
+    state=link
+    force=yes
