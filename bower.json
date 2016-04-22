@@ -1,0 +1,31 @@
+{
+  "name": "flux-for-frameworks",
+  "homepage": "https://github.com/stiggg/flux-for-frameworks",
+  "description": "Flux pattern implementations for Javascript frameworks.",
+  "main": "",
+  "keywords": [
+    "flux",
+    "backbonejs",
+    "angularjs"
+  ],
+  "authors": [
+    "Sami Tikka <stikka@iki.fi>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "ansible"
+  ],
+  "dependencies": {
+    "underscore": "^1.8.3"
+  },
+  "moduleType": "globals",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stiggg/flux-for-frameworks.git"
+  }
+}

@@ -1,0 +1,7 @@
+._*
+.swp
+.vagrant
+.DS_Store
+*.bak
+.tmp
+bower_components/
