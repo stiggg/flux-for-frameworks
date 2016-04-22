@@ -30,4 +30,8 @@ if you use directives to split scope into several components
 
 ### Usage
 
-Include [flux.angular.js](src/flux.angular.js) into your application. See [example usage](examples/angular.html).
+Include [flux.angular.js](src/flux.angular.js) into your application and add module to application. See [example usage](examples/angular.html).
+
+## Development
+
+Install Vagrant to your computer, and run ```vagrant up```. Examples are available at http://192.168.56.70/.
