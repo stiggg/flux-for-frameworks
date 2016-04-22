@@ -1,0 +1,22 @@
+---
+- hosts: production
+  user: www-data
+  sudo: no
+  vars:
+    source_dir: /vagrant/html5
+    www_root: /var/www/lumikuuro.com/html/releases
+  tasks:
+  - name: build distribution
+    local_action: command ./node_modules/grunt-cli/bin/grunt build
+    args:
+        chdir: "{{ source_dir }}"
+  - name: create releases directory
+    command: mkdir -p {{www_root}}
+  - name: recursively copy distribution files to production
+    local_action: command rsync -a {{ source_dir }}/dist www-data@{{ inventory_hostname }}:/var/www/lumikuuro.com/html/releases
+  - name: move directory to correct release name
+    command: mv /var/www/lumikuuro.com/html/releases/dist /var/www/lumikuuro.com/html/releases/{{release_version}}
+  - name: remove old symlink
+    command: rm -f /var/www/lumikuuro.com/html/releases/current
+  - name: symlink to latest
+    command: ln -s /var/www/lumikuuro.com/html/releases/{{release_version}} /var/www/lumikuuro.com/html/releases/current

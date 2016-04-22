@@ -1,0 +1,12 @@
+---
+- hosts: development
+  user: vagrant
+  sudo: yes
+  vars:
+    - nginx_site_name: "192.168.56.70"
+    - www_root: /vagrant"
+    - nginx_root_path: "{{www_root}}"
+  roles:
+    - vagrant
+    - nginx
+    - nodejs

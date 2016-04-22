@@ -1,0 +1,17 @@
+---
+- name: add apt sources
+  copy: src=sources.list dest=/etc/apt/sources.list
+- name: Update packages list
+  apt: update_cache=yes
+- name: Upgrade installed packages
+  apt: upgrade=dist force=yes
+- name: Install base programs
+  apt: name={{item}} state=present
+  with_items:
+  - git
+  - screen
+  - vim
+  - aptitude
+  - ntp
+#- name: upgrade ansible
+#  command: apt-get -t jessie-backports install ansible
