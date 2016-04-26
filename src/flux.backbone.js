@@ -20,6 +20,10 @@ var Flux = {};
       addListener: function(listener) {
         this.listeners.push(listener);
         return this.listeners.length - 1;
+      },
+
+      clearListeners: function() {
+        this.listeners = [];
       }
     };
   };
