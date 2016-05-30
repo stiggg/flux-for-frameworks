@@ -41,3 +41,7 @@ Include [flux.angular.js](src/flux.angular.js) and add ```fluxForAngular``` modu
 ## Development
 
 Install Vagrant to your computer, and run ```vagrant up```. You can then browse examples at http://192.168.56.70/.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/stiggg/flux-for-frameworks/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
